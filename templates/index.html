@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>¿Texto claro u obscuro?</title>
+</head>
+
+<body style="font-family: Arial, Helvetica, sans-serif; padding: 20px">
+    <h2>¿Texto claro u obscuro?</h2>
+    <h3>Elije el color del fondo</h3>
+    <form method="POST">
+        <label>Rojo (0-255) </label>
+        <input type="number" name="red" min="0" max="255" value="{{ request.form.red or '0' }}"><br><br>
+        <label>Verde (0-255) </label>
+        <input type="number" name="green" min="0" max="255" value="{{ request.form.green or '0' }}"><br><br>
+        <label>Azul (0-255) </label>
+        <input type="number" name="blue" min="0" max="255" value="{{ request.form.blue or '0' }}"><br><br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    {% if prediction is not none %}
+        {% if prediction == 0 %}
+            {% set prediction = 'claro' %}
+        {% elif prediction == 1 %}
+            {% set prediction = 'obscuro' %}
+        {% endif %}
+        
+        <div class="result {% if prediction == 'claro' %}dark-bg{% else %}light-bg{% endif %}" 
+             style="background-color: rgb({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }});">
+            <h3>Resultado:</h3>
+            <p>Para el color RGB {{ rgb }}, se recomienda usar texto <strong>{{ prediction }}</strong>.</p>
+        </div>
+    {% elif request.method == "POST" %}
+        <div class="result">
+            <p>No se pudo generar una predicción para RGB {{ rgb }}.</p>
+        </div>
+    {% endif %}
+
+</body>
+
+<style>
+        .debug {
+            color: gray;
+            font-size: 0.8em;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .light-bg {
+            
+            color: #000000;
+        }
+        .dark-bg {
+            
+            color: #ffffff;
+        }
+    </style>
+</html>
