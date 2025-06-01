@@ -7,15 +7,9 @@
 <body style="font-family: Arial, Helvetica, sans-serif; padding: 20px">
     <h2>¿Texto claro u obscuro?</h2>
     <h3>Elije el color del fondo</h3>
-    <form method="POST">
-        <label>Rojo (0-255) </label>
-        <input type="number" name="red" min="0" max="255" value="{{ request.form.red or '0' }}"><br><br>
-        <label>Verde (0-255) </label>
-        <input type="number" name="green" min="0" max="255" value="{{ request.form.green or '0' }}"><br><br>
-        <label>Azul (0-255) </label>
-        <input type="number" name="blue" min="0" max="255" value="{{ request.form.blue or '0' }}"><br><br>
-        <button type="submit">Enviar</button>
-    </form>
+
+    <input type="color" id="colorPicker"><br><br>
+    <button id="submitBtn">Enviar</button>
 
     {% if prediction is not none %}
         {% if prediction == 0 %}
@@ -37,27 +31,56 @@
 
 </body>
 
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        const color = document.getElementById('colorPicker').value;
+        
+        // Convertir hex a RGB
+        const r = parseInt(color.substr(1, 2), 16);
+        const g = parseInt(color.substr(3, 2), 16);
+        const b = parseInt(color.substr(5, 2), 16);
+        
+        // Crear formulario dinámico para enviar los datos
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.style.display = 'none';
+        
+        const addInput = (name, value) => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            form.appendChild(input);
+        };
+        
+        addInput('red', r);
+        addInput('green', g);
+        addInput('blue', b);
+        
+        document.body.appendChild(form);
+        form.submit();
+    });
+</script>
+
 <style>
-        .debug {
-            color: gray;
-            font-size: 0.8em;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        .light-bg {
-            
-            color: #000000;
-        }
-        .dark-bg {
-            
-            color: #ffffff;
-        }
-    </style>
+    .debug {
+        color: gray;
+        font-size: 0.8em;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+    }
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    .light-bg {
+        color: #000000;
+    }
+    .dark-bg {
+        color: #ffffff;
+    }
+</style>
 </html>
